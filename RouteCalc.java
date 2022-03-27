@@ -14,6 +14,7 @@ public class RouteCalc {
     // kandidaatoplossingen per epoch.
     private int EPOCHS;
     private int KANDIDATEN;
+    private KandidaatRoute besteKandidaat = new KandidaatRoute();
 
     private KandidaatRoute[] huidigeKandidaten;
 
@@ -67,6 +68,12 @@ public class RouteCalc {
 
     // bepaalRoute: bepaalt de optimale route en drukt deze af
     public void bepaalRoute() {
+        if(huidigeKandidaten[0].getScore() > besteKandidaat.getScore()) besteKandidaat = huidigeKandidaten[0];
+
+        if(this.epochNummer == EPOCHS) {
+            System.out.println("beste score van alle epochs: " + besteKandidaat.getScore());
+            System.out.println("beste route van alle epochs: " + Arrays.toString(besteKandidaat.getRoute()));
+        }
     }
 
     // evalueerKandidaat: bevat de evaluatiefunctie om een kandidaatroute van een
@@ -86,14 +93,9 @@ public class RouteCalc {
 
     // evalueerEpoch: evalueert alle kandidaatroutes in de huidige epoch
     public void evalueerEpoch() {
-        KandidaatRoute kandidaat = new KandidaatRoute();
-        for (KandidaatRoute k : huidigeKandidaten) {
-            if (kandidaat.compareTo(k) > 0) {
-                kandidaat = k;
-            }
-        }
-        System.out.println("best score is: " + kandidaat.getScore());
-        System.out.println("best route is: " + Arrays.toString(kandidaat.getRoute()));
+        Arrays.sort(huidigeKandidaten);
+        System.out.println("best score is: " + huidigeKandidaten[0].getScore());
+        System.out.println("best route is: " + Arrays.toString(huidigeKandidaten[0].getRoute()));
     }
 
     // randomKandidaat: genereert een random volgorde van de gevraagde bestemmingen.
@@ -121,13 +123,13 @@ public class RouteCalc {
     public void startSituatie() {
         for (int j = 0; j < EPOCHS; j++) {
             for (int i = 0; i < this.KANDIDATEN; i++) {
-                this.muteer(this.randomKandidaat());
                 huidigeKandidaten[i] = this.evaulueerKandidaat(this.randomKandidaat());
             }
             this.evalueerEpoch();
             System.out.println("------- Epoch nummer: " + (j + 1) + "---------");
+            this.volgendeEpoch();
+            this.bepaalRoute();
         }
-        this.volgendeEpoch();
     }
 
     // muteer: past een mutatie toe op een kandidaatroute en geeft de gemuteerd
@@ -147,49 +149,17 @@ public class RouteCalc {
     // volgendeEpoch: bepaalt elitair de collectie kandidaatoplossingen voor de
     // volgende epoch dmv mutatie en random toevoegingen en verhoogt het epochnummer
     public void volgendeEpoch() {
-        KandidaatRoute[] tijdelijk = new KandidaatRoute[this.KANDIDATEN];
-        // int n = (int) Math.round(huidigeKandidaten.length * 0.45);
+        this.epochNummer++;
+        int n = (int) Math.round(huidigeKandidaten.length * 0.45); //45% van de beste oplossingen bewaren 
 
         Arrays.sort(huidigeKandidaten);
 
-        // for(int i = 0; i < huidigeKandidaten.length; i++) {
-        //     KandidaatRoute kandidaat = new KandidaatRoute();
-        //     for(int j = 0; j < huidigeKandidaten.length; j++) {
-
-        //         if(huidigeKandidaten[i].compareTo(huidigeKandidaten[j]) > 0) {
-        //             tijdelijk[i] = huidigeKandidaten[i];
-        //         }
-        //         // Arrays.sort(huidigeKandidaten[i].compareTo(huidigeKandidaten[j]));
-        //     }
-        // }
-
-        // for(int i = 0; i < huidigeKandidaten.length; i++) {
-        //     KandidaatRoute kandidaat = new KandidaatRoute();
-        //     for (KandidaatRoute k : huidigeKandidaten) {
-        //         if (kandidaat.compareTo(k) > 0) {
-        //             kandidaat = k;
-        //             tijdelijk[i] = k;
-        //         }
-        //     }
-        // }
-
-        // for (int i = 0; i < huidigeKandidaten.length; i++) {
-        // for (int k = 0; k < huidigeKandidaten.length; k++) {
-        // if(huidigeKandidaten[i].compareTo(huidigeKandidaten[k]) < 0) {
-        // break;
-        // }
-        // }
-        // }
-
-        // KandidaatRoute kandidaat = new KandidaatRoute();
-        // int x;
-        // for (int i = 0; i <= n; i++) {
-        //     for (int j = 0; j <= huidigeKandidaten.length; j++)
-        //         if (kandidaat.compareTo(huidigeKandidaten[j]) > 0) {
-        //             kandidaat = huidigeKandidaten[j];
-        //             x = j;
-        //         }
-        //     tijdelijk[i] = kandidaat;
-        // }
+        for(int i = 0; i < huidigeKandidaten.length; i++) {
+            if(i > n && i <= (n+n)) {// de andere 45% daar voeg je muteren op.
+                huidigeKandidaten[i] = this.muteer(huidigeKandidaten[i]);
+            }else if(i > (n+n)) {// overige dat is dus 10% daar voeg je nieuwe oplossingen toe.
+                huidigeKandidaten[i] = this.evaulueerKandidaat(this.randomKandidaat());
+            }
+        }
     }
 }
