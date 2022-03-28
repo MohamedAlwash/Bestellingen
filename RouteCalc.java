@@ -134,7 +134,7 @@ public class RouteCalc {
 
     // muteer: past een mutatie toe op een kandidaatroute en geeft de gemuteerd
     // kandidaatroute terug.
-    public KandidaatRoute muteer(KandidaatRoute kandidaatRoute) {
+    public KandidaatRoute muteer(KandidaatRoute kandidaatRoute) {// deze moet ik aanpassen---------------------- random en soorten technieken
         int x = kandidaatRoute.getRoute()[1];
         kandidaatRoute.getRoute()[1] = kandidaatRoute.getRoute()[kandidaatRoute.getRoute().length - 1];
         kandidaatRoute.getRoute()[kandidaatRoute.getRoute().length - 1] = x;
@@ -156,7 +156,7 @@ public class RouteCalc {
 
         for(int i = 0; i < huidigeKandidaten.length; i++) {
             if(i > n && i <= (n+n)) {// de andere 45% daar voeg je muteren op.
-                huidigeKandidaten[i] = this.muteer(huidigeKandidaten[i]);
+                huidigeKandidaten[i] = this.evaulueerKandidaat(this.muteer(huidigeKandidaten[i-n]));
             }else if(i > (n+n)) {// overige dat is dus 10% daar voeg je nieuwe oplossingen toe.
                 huidigeKandidaten[i] = this.evaulueerKandidaat(this.randomKandidaat());
             }
