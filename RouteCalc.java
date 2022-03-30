@@ -134,14 +134,18 @@ public class RouteCalc {
 
     // muteer: past een mutatie toe op een kandidaatroute en geeft de gemuteerd
     // kandidaatroute terug.
-    public KandidaatRoute muteer(KandidaatRoute kandidaatRoute) {// deze moet ik aanpassen---------------------- random en soorten technieken
-        int x = kandidaatRoute.getRoute()[1];
-        kandidaatRoute.getRoute()[1] = kandidaatRoute.getRoute()[kandidaatRoute.getRoute().length - 1];
-        kandidaatRoute.getRoute()[kandidaatRoute.getRoute().length - 1] = x;
+    public KandidaatRoute muteer(KandidaatRoute kandidaatRoute) {
+        Random rand = new Random();
+        int randomNumber = rand.nextInt(kandidaatRoute.getRoute().length);
 
-        int j = kandidaatRoute.getRoute()[2];
-        kandidaatRoute.getRoute()[2] = kandidaatRoute.getRoute()[kandidaatRoute.getRoute().length - 2];
-        kandidaatRoute.getRoute()[kandidaatRoute.getRoute().length - 2] = j;
+        for (int i = 0; i < randomNumber; i++) {
+            int randomIndexToSwap1 = rand.nextInt(kandidaatRoute.getRoute().length);
+            int randomIndexToSwap2 = rand.nextInt(kandidaatRoute.getRoute().length);
+
+            int temp = kandidaatRoute.getRoute()[randomIndexToSwap1];
+            kandidaatRoute.getRoute()[randomIndexToSwap1] = kandidaatRoute.getRoute()[randomIndexToSwap2];
+            kandidaatRoute.getRoute()[randomIndexToSwap2] = temp;
+        }
 
         return kandidaatRoute;
     }
@@ -149,6 +153,7 @@ public class RouteCalc {
     // volgendeEpoch: bepaalt elitair de collectie kandidaatoplossingen voor de
     // volgende epoch dmv mutatie en random toevoegingen en verhoogt het epochnummer
     public void volgendeEpoch() {
+
         this.epochNummer++;
         int n = (int) Math.round(huidigeKandidaten.length * 0.45); //45% van de beste oplossingen bewaren 
 
