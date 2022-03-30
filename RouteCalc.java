@@ -136,7 +136,8 @@ public class RouteCalc {
     // kandidaatroute terug.
     public KandidaatRoute muteer(KandidaatRoute kandidaatRoute) {
         Random rand = new Random();
-        int randomNumber = rand.nextInt(kandidaatRoute.getRoute().length);
+        int randomNumber = 0;
+        while(randomNumber == 0) randomNumber = rand.nextInt(kandidaatRoute.getRoute().length);
 
         for (int i = 0; i < randomNumber; i++) {
             int randomIndexToSwap1 = rand.nextInt(kandidaatRoute.getRoute().length);
